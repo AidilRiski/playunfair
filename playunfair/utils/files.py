@@ -10,8 +10,9 @@ def splitToBlocks(blockSize, data):
         currentBlock.append(byte)
         counter += 1
         if counter == blockSize:
-            counter = 0
             blocks.append(currentBlock)
+            counter = 0
+            currentBlock = []
     if counter != 0:
         diff = blockSize - counter
         while diff > 0:
@@ -19,3 +20,10 @@ def splitToBlocks(blockSize, data):
             diff -= 1
         blocks.append(currentBlock)
     return blocks
+
+def joinBlocks(blocks):
+    data = []
+    for block in blocks:
+        for byte in block:
+            data.append(byte)
+    return data
