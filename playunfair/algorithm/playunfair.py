@@ -76,3 +76,6 @@ def decryptPlayfairHelper(row1, col1, row2, col2):
         return [row1 - 1, col1, row2 - 1, col2]
     else:
         return [row2, col1, row1, col2]
+
+def switchKey(key, block):
+    return operations.xorBlock(key, block)
