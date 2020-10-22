@@ -1,6 +1,8 @@
 def openFile(filename):
     file = open(filename, 'rb')
-    return file.read()
+    data = file.read()
+    file.close()
+    return data
 
 def splitToBlocks(blockSize, data):
     blocks = []
@@ -27,3 +29,8 @@ def joinBlocks(blocks):
         for byte in block:
             data.append(byte)
     return data
+
+def writeFile(filename, byteArray):
+    file = open(filename, 'wb')
+    file.write(byteArray)
+    file.close()
