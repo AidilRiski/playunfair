@@ -23,3 +23,22 @@ def generateRoundKeys(initialKeyBlock):
         key = ck[0] + dk[0]
         keys.append(int(operations.joinBitArray(key), 2))
     return keys
+
+def encrypt(internalKey, block, encryptFunction):
+    li = block[:len(block) // 2]
+    ri = block[len(block) // 2:]
+    for i in range(16):
+        oldRi = ri
+        ri = operations.xorBlock(li, encryptFunction(internalKey[i], ri))
+        li = oldRi
+    return li + ri
+
+def decrypt(internalKey, block, decryptFunction):
+    internalKey = internalKey[::-1]
+    li = block[:len(block) // 2]
+    ri = block[len(block) // 2:]
+    for i in range(16):
+        oldLi = li
+        li = operations.xorBlock(ri, decryptFunction(internalKey[i], li))
+        ri = oldLi
+    return li + ri
