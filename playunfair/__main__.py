@@ -4,20 +4,20 @@ from playunfair.constants import feistel as feistelConstants
 from playunfair.constants import sbox as sboxConstants
 
 if __name__ == '__main__':
-    print('Hello world!')
-    
-    # print("CBC")
-    # data = files.openFile(".gitignore")
-    # print([el for el in data[:12]])
-    # blocks = files.splitToBlocks(3, data)
-    # key = [255, 255, 255]
-    # initialVector = [0, 0, 0]
-    # cipher = cbc.encrypt(key, initialVector, blocks, easyEncrypt.encrypt)
-    # newData = files.joinBlocks(cipher)
-    # print(newData[:12])
-    # plainBlocks = cbc.decrypt(key, initialVector, cipher, easyEncrypt.encrypt)
-    # plainData = files.joinBlocks(plainBlocks)
-    # print(plainData[:12])
+    print("CBC")
+    filename = '.gitignore'
+    data = files.openFile(filename)
+    blocks = files.splitToBlocks(8, data)
+    key = [255, 255, 255, 1, 13, 69, 210, 155]
+    initialVector = [0, 0, 0, 0, 0, 0, 0, 0]
+    cipher = cbc.encrypt(key, initialVector, blocks, playunfair.networkEncrypt)
+    newData = files.joinBlocks(cipher)
+    files.writeFile('cipher.' + filename, bytearray(newData))
+    data = files.openFile('cipher.' + filename)
+    blocks = files.splitToBlocks(8, data)
+    plainBlocks = cbc.decrypt(key, initialVector, cipher, playunfair.networkDecrypt)
+    plainData = files.joinBlocks(plainBlocks)
+    files.writeFile('decipher.' + filename, bytearray(plainData))
 
     # print("ECB")
     # data = files.openFile(".gitignore")

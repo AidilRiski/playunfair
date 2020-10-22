@@ -145,3 +145,5 @@ dmypy.json
 *.txt
 *.png
 *.bmp
+cipher.*
+decipher.*
