@@ -1,4 +1,10 @@
 from playunfair.utils import operations
+from playunfair.algorithm import (
+    feistel,
+    sbox,
+)
+from playunfair.constants import sbox as sboxConstants
+import numpy
 
 def encryptFeistel(key, block):
     key = key.to_bytes(6, byteorder='big')
@@ -21,8 +27,8 @@ def createTable(key):
     return table
 
 def getTableElement(row, col, table):
-    row = row % 16 if row < 0 or row > 16 else row
-    col = col % 16 if col < 0 or col > 16 else col
+    row = row % 16 if row < 0 or row >= 16 else row
+    col = col % 16 if col < 0 or col >= 16 else col
     return table[row * 16 + col]
 
 def encryptPlayfair(table, block):
@@ -79,3 +85,39 @@ def decryptPlayfairHelper(row1, col1, row2, col2):
 
 def switchKey(key, block):
     return operations.xorBlock(key, block)
+
+def cycleTable(key, table):
+    for byte in key:
+        if byte % 2 == 1:
+            return numpy.roll(table, 1).tolist()
+        else:
+            reversedTable = []
+            for row in table:
+                reversedTable.append(numpy.roll(row, 1).tolist())
+            return reversedTable
+
+def networkEncrypt(key, block):
+    sbox1 = createTable(key)
+    sbox2 = cycleTable(key, sbox1)
+    cipherBlock1 = encryptPlayfair(sbox1, block)
+    cipherBlock2 = encryptPlayfair(sbox2, cipherBlock1)
+    cipherBlock3 = sbox.encrypt(sboxConstants.AES_MATRIX, cipherBlock2)
+    twoBytes = cipherBlock3[:2]
+    sixBytes = cipherBlock3[2:]
+    twoBytesFeistelResult = feistel.encrypt(key, twoBytes, encryptFeistel)
+    sixBytesFeistelResult = feistel.encrypt(key, sixBytes, encryptFeistel)
+    cipherBlock4 = twoBytesFeistelResult + sixBytesFeistelResult
+    return cipherBlock4
+
+def networkDecrypt(key, block):
+    twoBytes = block[:2]
+    sixBytes = block[2:]
+    twoBytesFeistelResult = feistel.decrypt(key, twoBytes, encryptFeistel)
+    sixBytesFeistelResult = feistel.decrypt(key, sixBytes, encryptFeistel)
+    plainBlock1 = twoBytesFeistelResult + sixBytesFeistelResult
+    plainBlock2 = sbox.decrypt(sboxConstants.AES_MATRIX, plainBlock1)
+    sbox1 = createTable(key)
+    sbox2 = cycleTable(key, sbox1)
+    plainBlock3 = decryptPlayfair(sbox2, plainBlock2)
+    plainBlock4 = decryptPlayfair(sbox1, plainBlock3)
+    return plainBlock4
