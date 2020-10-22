@@ -16,7 +16,7 @@ def splitToBlocks(blockSize, data):
     if counter != 0:
         diff = blockSize - counter
         while diff > 0:
-            currentBlock.insert(0, 0)
+            currentBlock.append(0)
             diff -= 1
         blocks.append(currentBlock)
     return blocks
