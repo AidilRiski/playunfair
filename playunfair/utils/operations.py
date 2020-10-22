@@ -22,3 +22,24 @@ def createMask(bitN):
 
 def byteOfBitN(bitN):
     return bitN // 8
+
+def joinBitArray(array):
+    return "".join(map(str, array))
+
+def bitArrayToBytesBlock(array):
+    block = []
+    count = 0
+    byte = []
+    for bit in array:
+        byte.append(bit)
+        count += 1
+        if count == 8:
+            block.append(int(joinBitArray(byte), 2))
+            count = 0
+            byte = []
+    if count != 0:
+        while count < 8:
+            byte.append(0)
+            count += 1
+        block.append(int(joinBitArray(byte), 2))
+    return block
