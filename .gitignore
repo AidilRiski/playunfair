@@ -147,3 +147,5 @@ dmypy.json
 *.bmp
 cipher.*
 decipher.*
+*.plain
+*.cipher
