@@ -29,11 +29,11 @@ def main(args):
     elif decrypt:
         plain = []
         if method == 'cbc':
-            plain = cbc.decrypt(key, cbcConstants.INITIAL_VECTOR, blocks, playunfair.networkEncrypt)
+            plain = cbc.decrypt(key, cbcConstants.INITIAL_VECTOR, blocks, playunfair.networkDecrypt)
         elif method == 'ecb':
-            plain = ecb.decrypt(key, blocks, playunfair.networkEncrypt)
+            plain = ecb.decrypt(key, blocks, playunfair.networkDecrypt)
         elif method == 'ctr':
-            plain = ctr.decrypt(key, blocks, playunfair.networkEncrypt)
+            plain = ctr.decrypt(key, blocks, playunfair.networkDecrypt)
         newData = files.joinBlocks(plain)
         files.writeFile(filename + '.plain', bytearray(newData))
 
