@@ -43,3 +43,9 @@ def bitArrayToBytesBlock(array):
             count += 1
         block.append(int(joinBitArray(byte), 2))
     return block
+
+def repeatArrayUntilLength(length, array):
+    newArray = []
+    for i in range(length):
+        newArray.append(array[i % len(array)])
+    return newArray

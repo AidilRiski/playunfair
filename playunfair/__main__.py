@@ -14,26 +14,30 @@ def main(args):
 
     data = files.openFile(filename)
     blocks = files.splitToBlocks(8, data)
+    key = key[:len(blocks) * 8]
+    key = operations.repeatArrayUntilLength(len(blocks) * 8, key)
+    key = operations.joinBitArray(key)
     key = bytearray(key, 'utf-8')
+    keyBlocks = files.splitToBlocks(8, key)
 
     if encrypt:
         cipher = []
         if method == 'cbc':
-            cipher = cbc.encrypt(key, cbcConstants.INITIAL_VECTOR, blocks, playunfair.networkEncrypt)
+            cipher = cbc.encrypt(keyBlocks, cbcConstants.INITIAL_VECTOR, blocks, playunfair.networkEncrypt)
         elif method == 'ecb':
-            cipher = ecb.encrypt(key, blocks, playunfair.networkEncrypt)
+            cipher = ecb.encrypt(keyBlocks, blocks, playunfair.networkEncrypt)
         elif method == 'ctr':
-            cipher = ctr.encrypt(key, blocks, playunfair.networkEncrypt)
+            cipher = ctr.encrypt(keyBlocks, blocks, playunfair.networkEncrypt)
         newData = files.joinBlocks(cipher)
         files.writeFile(filename + '.cipher', bytearray(newData))
     elif decrypt:
         plain = []
         if method == 'cbc':
-            plain = cbc.decrypt(key, cbcConstants.INITIAL_VECTOR, blocks, playunfair.networkDecrypt)
+            plain = cbc.decrypt(keyBlocks, cbcConstants.INITIAL_VECTOR, blocks, playunfair.networkDecrypt)
         elif method == 'ecb':
-            plain = ecb.decrypt(key, blocks, playunfair.networkDecrypt)
+            plain = ecb.decrypt(keyBlocks, blocks, playunfair.networkDecrypt)
         elif method == 'ctr':
-            plain = ctr.decrypt(key, blocks, playunfair.networkDecrypt)
+            plain = ctr.decrypt(keyBlocks, blocks, playunfair.networkDecrypt)
         newData = files.joinBlocks(plain)
         files.writeFile(filename + '.plain', bytearray(newData))
 

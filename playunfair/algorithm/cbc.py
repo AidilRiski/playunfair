@@ -7,9 +7,9 @@ def vectorizeBlock(vector, block):
 def encrypt(key, initialVector, blocks, encryptFunction):
     cipherBlocks = []
     currentVector = initialVector
-    for block in blocks:
+    for i, block in enumerate(blocks):
         vectorized = vectorizeBlock(currentVector, block)
-        cipherBlock = encryptFunction(key, vectorized)
+        cipherBlock = encryptFunction(key[i], vectorized)
         cipherBlocks.append(cipherBlock)
         currentVector = cipherBlock
     return cipherBlocks
@@ -17,8 +17,8 @@ def encrypt(key, initialVector, blocks, encryptFunction):
 def decrypt(key, initialVector, blocks, decryptFunction):
     plainBlocks = []
     currentVector = initialVector
-    for block in blocks:
-        plainBlock = decryptFunction(key, block)
+    for i, block in enumerate(blocks):
+        plainBlock = decryptFunction(key[i], block)
         plainBlock = vectorizeBlock(currentVector, plainBlock)
         plainBlocks.append(plainBlock)
         currentVector = block
